@@ -70,16 +70,16 @@ function ObjectFields({ obj, unit, is2d }: { obj: ArrObject; unit: string; is2d:
       ))}
       <Field label={`Position (${unit})`}>
         <div className="vec">
-          <NumberField title="X" value={obj.position[0]} onChange={(v) => setPos(0, v)} />
-          <NumberField title="Y" value={obj.position[1]} onChange={(v) => setPos(1, v)} />
-          {!is2d && <NumberField title="Z" value={obj.position[2]} onChange={(v) => setPos(2, v)} />}
+          <NumberField title="Position X" value={obj.position[0]} onChange={(v) => setPos(0, v)} />
+          <NumberField title="Position Y" value={obj.position[1]} onChange={(v) => setPos(1, v)} />
+          {!is2d && <NumberField title="Position Z" value={obj.position[2]} onChange={(v) => setPos(2, v)} />}
         </div>
       </Field>
       <Field label="Rotation (°)">
         <div className="vec">
-          {!is2d && <NumberField title="X" value={obj.rotation[0]} onChange={(v) => setRot(0, v)} />}
-          {!is2d && <NumberField title="Y" value={obj.rotation[1]} onChange={(v) => setRot(1, v)} />}
-          <NumberField title="Z" value={obj.rotation[2]} onChange={(v) => setRot(2, v)} />
+          {!is2d && <NumberField title="Rotation X" value={obj.rotation[0]} onChange={(v) => setRot(0, v)} />}
+          {!is2d && <NumberField title="Rotation Y" value={obj.rotation[1]} onChange={(v) => setRot(1, v)} />}
+          <NumberField title="Rotation Z" value={obj.rotation[2]} onChange={(v) => setRot(2, v)} />
         </div>
       </Field>
     </>
