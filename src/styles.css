@@ -1,9 +1,243 @@
 :root {
   font-family: system-ui, sans-serif;
+  font-size: 13px;
   color: #e6e6e6;
   background: #1e1e1e;
+  --panel: #2a2a2a;
+  --border: #3c3c3c;
+  --accent: #6d8fc7;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
+  overflow: hidden;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.workspace {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.viewport {
+  flex: 1;
+  position: relative;
+}
+
+.viewport canvas {
+  display: block;
+}
+
+.toolbar {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 6px 10px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+}
+
+.group {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.group.right {
+  margin-left: auto;
+}
+
+.panel {
+  width: 240px;
+  background: var(--panel);
+  border-left: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.panel.left {
+  border-left: none;
+  border-right: 1px solid var(--border);
+  width: 200px;
+}
+
+.panel h2 {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #999;
+  margin: 0 0 6px;
+}
+
+.panel .muted {
+  color: #888;
+}
+
+button,
+select,
+input {
+  font: inherit;
+  color: inherit;
+  background: #363636;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 4px 8px;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:hover {
+  background: #444;
+}
+
+button.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+input[type='number'] {
+  width: 70px;
+}
+
+input[type='color'] {
+  padding: 0;
+  width: 32px;
+  height: 24px;
+}
+
+.field {
+  display: grid;
+  grid-template-columns: 70px 1fr;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.field input[type='text'] {
+  width: 100%;
+}
+
+.vec {
+  display: flex;
+  gap: 4px;
+}
+
+.vec input {
+  width: 100%;
+  min-width: 0;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.list li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.list li:hover {
+  background: #333;
+}
+
+.list li.selected {
+  background: #3a4a66;
+}
+
+.list li .name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.list li .swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.list li button {
+  padding: 1px 5px;
+  font-size: 11px;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: #1e1e1e;
+}
+
+.modal {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.modal h1 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.modal fieldset {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.error {
+  color: #e07a5f;
+  margin: 0;
+}
+
+.hint {
+  position: absolute;
+  left: 10px;
+  bottom: 8px;
+  color: #999;
+  font-size: 12px;
+  pointer-events: none;
 }
