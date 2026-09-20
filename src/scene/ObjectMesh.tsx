@@ -54,7 +54,7 @@ export function ObjectMesh({ obj }: { obj: ArrObject }) {
   const hitPoint = (e: ThreeEvent<PointerEvent>, plane: THREE.Plane) => e.ray.intersectPlane(plane, new THREE.Vector3())
 
   const onPointerDown = (e: ThreeEvent<PointerEvent>) => {
-    if (tool === 'connect' || e.button !== 0) return
+    if (tool === 'connect' || e.button !== 0 || gizmo.active) return
     e.stopPropagation()
     select(obj.id)
     if (tool !== 'move') return
@@ -100,7 +100,8 @@ export function ObjectMesh({ obj }: { obj: ArrObject }) {
           showY={tool === 'move' || !is2d}
           showZ={tool === 'rotate' || !is2d}
           onObjectChange={syncFromGizmo}
-          onMouseDown={() => { gizmo.active = true }}
+          // R3F raycasts straight through the gizmo pickers, a press on an arrow also starts a body drag on the mesh beneath
+          onMouseDown={() => { gizmo.active = true; drag.current = null }}
           onMouseUp={() => { setTimeout(() => { gizmo.active = false }) }}
         />
       )}
