@@ -12,6 +12,20 @@ const DEG = Math.PI / 180
 // a click on the gizmo without a drag still counts as a pointer miss, this flag suppresses the deselect
 export const gizmo = { active: false }
 
+// three-stdlib bakes each 'bwd' translate arrow pointing inward
+// when an axis faces away from the camera the gizmo mirrors that arrow to the near end, leaving it pointing at the object
+// sharing the 'fwd' geometry makes the mirrored arrow point outward along its line
+function fixArrowDirections(controls: THREE.Object3D | null) {
+  controls?.traverse((o) => {
+    const handle = o as THREE.Mesh & { tag?: string }
+    if (handle.tag !== 'bwd') return
+    const fwd = handle.parent?.children.find((c) => c.name === handle.name && (c as { tag?: string }).tag === 'fwd') as THREE.Mesh | undefined
+    if (!fwd || handle.geometry === fwd.geometry) return
+    handle.geometry.dispose()
+    handle.geometry = fwd.geometry
+  })
+}
+
 export function ObjectMesh({ obj }: { obj: ArrObject }) {
   const ref = useRef<THREE.Group>(null!)
   const selected = useStore((s) => s.selectedId === obj.id)
@@ -79,6 +93,7 @@ export function ObjectMesh({ obj }: { obj: ArrObject }) {
       </group>
       {showGizmo && (
         <TransformControls
+          ref={fixArrowDirections}
           object={ref}
           mode={tool === 'rotate' ? 'rotate' : 'translate'}
           showX={tool === 'move' || !is2d}
