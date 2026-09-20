@@ -58,7 +58,7 @@ body {
 }
 
 .panel {
-  width: 240px;
+  width: 300px;
   background: var(--panel);
   border-left: 1px solid var(--border);
   overflow-y: auto;
@@ -129,7 +129,7 @@ input[type='color'] {
 
 .field {
   display: grid;
-  grid-template-columns: 70px 1fr;
+  grid-template-columns: 80px 1fr;
   align-items: center;
   gap: 6px;
   margin-bottom: 4px;
@@ -147,6 +147,7 @@ input[type='color'] {
 .vec input {
   width: 100%;
   min-width: 0;
+  padding: 4px 4px;
 }
 
 .list {
