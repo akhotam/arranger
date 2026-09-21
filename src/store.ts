@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { clampToSpace } from './model/bounds'
+import { resolveCollisions } from './model/collision'
 import { newProject } from './model/project'
 import { normalizeSize, SHAPES } from './model/shapes'
 import { newId, type ArrObject, type Connection, type PointRef, type Project, type Shape, type Space, type Unit, type Vec3 } from './model/types'
@@ -15,6 +16,7 @@ interface State {
   tool: Tool
   selectedId: string | null
   pendingPoint: PointRef | null
+  preventOverlap: boolean
 
   newProject: (space: Space, unit: Unit) => void
   loadProject: (project: Project) => void
@@ -24,6 +26,7 @@ interface State {
   setMode: (mode: Mode) => void
   setTool: (tool: Tool) => void
   select: (id: string | null) => void
+  setPreventOverlap: (on: boolean) => void
 
   addObject: (shape: Shape) => void
   updateObject: (id: string, patch: Partial<Omit<ArrObject, 'id' | 'shape'>>) => void
@@ -49,6 +52,7 @@ export const useStore = create<State>((set, get) => {
     tool: 'move',
     selectedId: null,
     pendingPoint: null,
+    preventOverlap: false,
 
     newProject: (space, unit) => set({ project: newProject(space, unit), selectedId: null, pendingPoint: null, mode: '2d' }),
     loadProject: (project) => set({ project, selectedId: null, pendingPoint: null, mode: '2d' }),
@@ -58,6 +62,7 @@ export const useStore = create<State>((set, get) => {
     setMode: (mode) => set({ mode, pendingPoint: null }),
     setTool: (tool) => set({ tool, pendingPoint: null }),
     select: (id) => set({ selectedId: id }),
+    setPreventOverlap: (on) => set({ preventOverlap: on }),
 
     addObject: (shape) =>
       patchProject((p) => {
@@ -84,7 +89,10 @@ export const useStore = create<State>((set, get) => {
           if (o.id !== id) return o
           const next = { ...o, ...patch }
           const sized = { ...next, size: normalizeSize(o.shape, next.size) }
-          return { ...sized, position: clampToSpace(p.space, sized) }
+          const clamped = { ...sized, position: clampToSpace(p.space, sized) }
+          const posed = patch.position || patch.rotation || patch.size
+          if (!posed || !get().preventOverlap) return clamped
+          return { ...clamped, ...resolveCollisions(p.objects.filter((x) => x.id !== id), o, clamped) }
         }),
       })),
 

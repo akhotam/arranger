@@ -2,7 +2,6 @@ import { TransformControls } from '@react-three/drei'
 import type { ThreeEvent } from '@react-three/fiber'
 import { useEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
-import { clampToSpace } from '../model/bounds'
 import { buildGeometry } from '../model/shapes'
 import { connectionPoints } from '../model/points'
 import type { ArrObject, Vec3 } from '../model/types'
@@ -32,7 +31,6 @@ export function ObjectMesh({ obj }: { obj: ArrObject }) {
   const selected = useStore((s) => s.selectedId === obj.id)
   const tool = useStore((s) => s.tool)
   const mode = useStore((s) => s.mode)
-  const space = useStore((s) => s.project?.space)
   const select = useStore((s) => s.select)
   const updateObject = useStore((s) => s.updateObject)
 
@@ -44,12 +42,13 @@ export function ObjectMesh({ obj }: { obj: ArrObject }) {
 
   const syncFromGizmo = () => {
     const g = ref.current
-    if (!g || !space) return
-    const rotation: Vec3 = [g.rotation.x / DEG, g.rotation.y / DEG, g.rotation.z / DEG]
-    // R3F skips an unchanged position prop, a group pulled past the wall needs the clamped value written back by hand
-    const position = clampToSpace(space, { ...obj, position: [g.position.x, g.position.y, g.position.z], rotation })
-    g.position.set(...position)
-    updateObject(obj.id, { position, rotation })
+    if (!g) return
+    updateObject(obj.id, { position: [g.position.x, g.position.y, g.position.z], rotation: [g.rotation.x / DEG, g.rotation.y / DEG, g.rotation.z / DEG] })
+    // R3F skips an unchanged prop, a group pulled past a wall or a neighbour needs the resolved pose written back by hand
+    const resolved = useStore.getState().project?.objects.find((o) => o.id === obj.id)
+    if (!resolved) return
+    g.position.set(...resolved.position)
+    g.rotation.set(resolved.rotation[0] * DEG, resolved.rotation[1] * DEG, resolved.rotation[2] * DEG)
   }
 
   // body drag slides the object on a floor-parallel plane through its centre

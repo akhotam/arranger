@@ -14,7 +14,8 @@ export function Toolbar() {
   const project = useStore((s) => s.project)
   const mode = useStore((s) => s.mode)
   const tool = useStore((s) => s.tool)
-  const { setMode, setTool, setUnit, addObject, closeProject, loadProject } = useStore()
+  const preventOverlap = useStore((s) => s.preventOverlap)
+  const { setMode, setTool, setUnit, setPreventOverlap, addObject, closeProject, loadProject } = useStore()
   if (!project) return null
 
   const open = async () => {
@@ -49,6 +50,11 @@ export function Toolbar() {
             {t.label}
           </button>
         ))}
+      </div>
+      <div className="group">
+        <button className={preventOverlap ? 'active' : ''} title="Stop objects moving into each other" onClick={() => setPreventOverlap(!preventOverlap)}>
+          No overlap
+        </button>
       </div>
       <div className="group right">
         <label>
