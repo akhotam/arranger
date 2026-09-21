@@ -5,7 +5,7 @@ import type { ArrObject, Space } from './types'
 const near = (a: number[], b: number[]) => a.forEach((v, i) => expect(v).toBeCloseTo(b[i], 6))
 
 const box: ArrObject = {
-  id: 'a', name: 'a', shape: 'box', color: '#fff',
+  id: 'a', name: 'a', shape: 'box', color: '#fff', showLabel: false,
   size: { w: 10, d: 20, h: 30 },
   position: [50, 50, 15],
   rotation: [0, 0, 0],
