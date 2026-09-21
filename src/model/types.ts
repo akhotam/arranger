@@ -19,6 +19,7 @@ export interface ArrObject {
   position: Vec3
   rotation: Vec3 // degrees, XYZ order
   color: string
+  showLabel: boolean
 }
 
 export interface PointRef {

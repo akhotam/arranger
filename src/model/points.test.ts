@@ -92,7 +92,7 @@ describe('normals', () => {
 
 describe('worldPoint', () => {
   const obj: ArrObject = {
-    id: 'a', name: 'a', shape: 'box', color: '#fff',
+    id: 'a', name: 'a', shape: 'box', color: '#fff', showLabel: false,
     size: { w: 2, d: 2, h: 2 },
     position: [10, 20, 30],
     rotation: [0, 0, 90],

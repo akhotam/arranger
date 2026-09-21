@@ -3,7 +3,7 @@ import { resolveCollisions } from './collision'
 import type { ArrObject } from './types'
 
 const box = (id: string, position: [number, number, number], extra: Partial<ArrObject> = {}): ArrObject => ({
-  id, name: id, shape: 'box', color: '#fff',
+  id, name: id, shape: 'box', color: '#fff', showLabel: false,
   size: { w: 10, d: 10, h: 10 },
   position,
   rotation: [0, 0, 0],

@@ -61,6 +61,7 @@ function ObjectFields({ obj, unit, is2d }: { obj: ArrObject; unit: string; is2d:
   return (
     <>
       <Field label="Name"><input type="text" value={obj.name} onChange={(e) => updateObject(obj.id, { name: e.target.value })} /></Field>
+      <Field label="Label"><input type="checkbox" checked={obj.showLabel} onChange={(e) => updateObject(obj.id, { showLabel: e.target.checked })} /></Field>
       <Field label="Shape"><span>{def.label}</span></Field>
       <Field label="Colour"><input type="color" value={obj.color} onChange={(e) => updateObject(obj.id, { color: e.target.value })} /></Field>
       {def.sizeFields.map((f) => (
