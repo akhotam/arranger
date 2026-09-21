@@ -4,12 +4,16 @@ import type { ArrObject, Space, Vec3 } from './types'
 
 const DEG = Math.PI / 180
 
-// mesh vertices bound exactly what renders, rotated round shapes need no analytic extents
-export function worldBounds(obj: ArrObject): THREE.Box3 {
+export function worldGeometry(obj: ArrObject): THREE.BufferGeometry {
   const [rx, ry, rz] = obj.rotation
   const m = new THREE.Matrix4().makeRotationFromEuler(new THREE.Euler(rx * DEG, ry * DEG, rz * DEG, 'XYZ'))
   m.setPosition(...obj.position)
-  const g = buildGeometry(obj.shape, obj.size).applyMatrix4(m)
+  return buildGeometry(obj.shape, obj.size).applyMatrix4(m)
+}
+
+// mesh vertices bound exactly what renders, rotated round shapes need no analytic extents
+export function worldBounds(obj: ArrObject): THREE.Box3 {
+  const g = worldGeometry(obj)
   g.computeBoundingBox()
   return g.boundingBox!
 }
