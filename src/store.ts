@@ -77,6 +77,7 @@ export const useStore = create<State>((set, get) => {
           position: [cx, cy, size.h / 2],
           rotation: [0, 0, 0],
           color: COLORS[p.objects.length % COLORS.length],
+          showLabel: false,
         }
         obj.position = clampToSpace(p.space, obj)
         set({ selectedId: obj.id })

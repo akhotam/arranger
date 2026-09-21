@@ -42,6 +42,8 @@ function parseObject(raw: unknown): ArrObject {
     position: o.position,
     rotation: o.rotation,
     color: o.color,
+    // older files predate this flag, missing reads as off
+    showLabel: o.showLabel === true,
   }
 }
 

@@ -5,8 +5,8 @@ import type { Project } from './types'
 const sample = (): Project => ({
   ...newProject({ kind: 'bounded', w: 400, d: 300, h: 250 }, 'cm'),
   objects: [
-    { id: 'a', name: 'A', shape: 'box', size: { w: 10, d: 20, h: 30 }, position: [1, 2, 3], rotation: [0, 0, 45], color: '#f00' },
-    { id: 'b', name: 'B', shape: 'sphere', size: { w: 10, d: 10, h: 10 }, position: [5, 5, 5], rotation: [0, 0, 0], color: '#0f0' },
+    { id: 'a', name: 'A', shape: 'box', size: { w: 10, d: 20, h: 30 }, position: [1, 2, 3], rotation: [0, 0, 45], color: '#f00', showLabel: true },
+    { id: 'b', name: 'B', shape: 'sphere', size: { w: 10, d: 10, h: 10 }, position: [5, 5, 5], rotation: [0, 0, 0], color: '#0f0', showLabel: false },
   ],
   connections: [{ id: 'c1', a: { objectId: 'a', pointId: 'v0' }, b: { objectId: 'b', pointId: 'v5' } }],
 })
@@ -32,6 +32,12 @@ describe('project serialization', () => {
     p.connections.push({ id: 'c2', a: { objectId: 'a', pointId: 'v0' }, b: { objectId: 'zzz', pointId: 'v0' } })
     p.connections.push({ id: 'c3', a: { objectId: 'a', pointId: 'nope' }, b: { objectId: 'b', pointId: 'v0' } })
     expect(parse(serialize(p)).connections.map((c) => c.id)).toEqual(['c1'])
+  })
+
+  it('defaults showLabel to off when missing', () => {
+    const p = sample()
+    delete (p.objects[0] as { showLabel?: boolean }).showLabel
+    expect(parse(serialize(p)).objects[0].showLabel).toBe(false)
   })
 
   it('normalizes round shape sizes', () => {
