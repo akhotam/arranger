@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { clampToSpace } from './model/bounds'
 import { newProject } from './model/project'
 import { normalizeSize, SHAPES } from './model/shapes'
 import { newId, type ArrObject, type Connection, type PointRef, type Project, type Shape, type Space, type Unit, type Vec3 } from './model/types'
@@ -72,6 +73,7 @@ export const useStore = create<State>((set, get) => {
           rotation: [0, 0, 0],
           color: COLORS[p.objects.length % COLORS.length],
         }
+        obj.position = clampToSpace(p.space, obj)
         set({ selectedId: obj.id })
         return { objects: [...p.objects, obj] }
       }),
@@ -81,7 +83,8 @@ export const useStore = create<State>((set, get) => {
         objects: p.objects.map((o) => {
           if (o.id !== id) return o
           const next = { ...o, ...patch }
-          return { ...next, size: normalizeSize(o.shape, next.size) }
+          const sized = { ...next, size: normalizeSize(o.shape, next.size) }
+          return { ...sized, position: clampToSpace(p.space, sized) }
         }),
       })),
 
@@ -105,6 +108,7 @@ export const useStore = create<State>((set, get) => {
           name: `${src.name} copy`,
           position: [src.position[0] + src.size.w / 2, src.position[1], src.position[2]] as Vec3,
         }
+        copy.position = clampToSpace(p.space, copy)
         set({ selectedId: copy.id })
         return { objects: [...p.objects, copy] }
       }),
