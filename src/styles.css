@@ -139,6 +139,11 @@ input[type='color'] {
   width: 100%;
 }
 
+.field input[type='checkbox'] {
+  justify-self: start;
+  margin: 0;
+}
+
 .vec {
   display: flex;
   gap: 4px;
@@ -232,6 +237,17 @@ input[type='color'] {
 .error {
   color: #e07a5f;
   margin: 0;
+}
+
+.label {
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  font-size: 12px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.55);
+  padding: 1px 6px;
+  border-radius: 3px;
 }
 
 .hint {

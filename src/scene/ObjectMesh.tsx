@@ -1,4 +1,4 @@
-import { TransformControls } from '@react-three/drei'
+import { Html, TransformControls } from '@react-three/drei'
 import type { ThreeEvent } from '@react-three/fiber'
 import { useEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
@@ -92,6 +92,7 @@ export function ObjectMesh({ obj }: { obj: ArrObject }) {
           <lineBasicMaterial color={selected ? '#ffffff' : '#141414'} />
         </lineSegments>
         {tool === 'connect' && <PointDots obj={obj} />}
+        {obj.showLabel && <Html center position={[0, 0, obj.size.h / 2]} className="label">{obj.name}</Html>}
       </group>
       {showGizmo && (
         <TransformControls
