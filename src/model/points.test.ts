@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { connectionPoints, findPoint, worldPoint } from './points'
+import { connectionPoints, curveHandles, findPoint, worldDir, worldPoint } from './points'
 import type { ArrObject, Shape } from './types'
 
 const near = (a: number[], b: number[]) => a.forEach((v, i) => expect(v).toBeCloseTo(b[i], 6))
@@ -46,6 +46,50 @@ describe('connectionPoints', () => {
   })
 })
 
+describe('normals', () => {
+  const size = { w: 10, d: 20, h: 30 }
+  const normal = (shape: Shape, id: string) => findPoint({ shape, size } as ArrObject, id)!.normal
+  const unit = (v: number[]) => {
+    const l = Math.hypot(...v)
+    return v.map((c) => c / l)
+  }
+
+  it('box faces point along their axis', () => {
+    near(normal('box', 'f0'), [0, 0, -1])
+    near(normal('box', 'f3'), [1, 0, 0])
+  })
+
+  it('box vertex points along the corner diagonal', () => {
+    near(normal('box', 'v0'), unit([-5, -10, -15]))
+  })
+
+  it('box vertical edge points have no z component and match along the edge', () => {
+    near(normal('box', 'e8_25'), unit([-5, -10, 0]))
+    near(normal('box', 'e8_75'), normal('box', 'e8_25'))
+  })
+
+  it('wedge hypotenuse face points across the slope', () => {
+    near(normal('wedge', 'f3'), unit([20, 10, 0]))
+  })
+
+  it('wedge bottom hypotenuse edge points down', () => {
+    near(normal('wedge', 'e1_50'), [0, 0, -1])
+  })
+
+  it('sphere centre has no direction, surface points are radial', () => {
+    near(normal('sphere', 'v0'), [0, 0, 0])
+    near(normal('sphere', 'v1'), [1, 0, 0])
+  })
+
+  it('cone slant edge points outward and up', () => {
+    near(normal('cone', 'e0_50'), unit([30, 0, 5]))
+  })
+
+  it('cylinder edge points radially', () => {
+    near(normal('cylinder', 'e0_50'), [1, 0, 0])
+  })
+})
+
 describe('worldPoint', () => {
   const obj: ArrObject = {
     id: 'a', name: 'a', shape: 'box', color: '#fff',
@@ -60,5 +104,23 @@ describe('worldPoint', () => {
 
   it('applies pitch about x', () => {
     near(worldPoint({ ...obj, rotation: [90, 0, 0] }, [0, 1, 0]), [10, 20, 31])
+  })
+
+  it('worldDir rotates without translating', () => {
+    near(worldDir(obj, [1, 0, 0]), [0, 1, 0])
+  })
+})
+
+describe('curveHandles', () => {
+  it('leaves each end along its normal', () => {
+    const [ma, mb] = curveHandles([0, 0, 0], [0, 0, 1], [10, 0, 0], [0, 0, 1])
+    near(ma, [0, 0, 4])
+    near(mb, [10, 0, 4])
+  })
+
+  it('falls back toward the other end when a normal is zero', () => {
+    const [ma, mb] = curveHandles([0, 0, 0], [0, 0, 0], [10, 0, 0], [0, 0, 0])
+    near(ma, [4, 0, 0])
+    near(mb, [6, 0, 0])
   })
 })
