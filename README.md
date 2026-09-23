@@ -2,6 +2,8 @@
 
 A 2D & ED planning tool for arranging objects, connecting them, and visualizing how everything fits.
 
+Try it out yourself at: [akhotam.github.io/arranger](https://akhotam.github.io/arranger/)
+
 ## Example Uses
 <table>
   <tr>
